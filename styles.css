@@ -1,26 +1,39 @@
 /* Styles pour les sections du formulaire */
 .form-section {
     display: none;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ffd700;
 }
 
 .form-section.active {
     display: block;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 body {
-    background-color: #f8f9fa;
+    background-color: #f8f8f8;
 }
 
 .container {
     background-color: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    padding: 30px;
+    margin-top: 30px;
 }
 
 h1 {
-    color: #2c3e50;
-    margin-bottom: 2rem;
+    color: #333;
+    border-bottom: 3px solid #ffd700;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
 }
 
 h3 {
@@ -49,26 +62,28 @@ h3 {
 }
 
 .admin-link a:hover {
-    color: #4e73df !important;
+    color: #ffd700 !important;
 }
 
 /* Styles pour les boutons et formulaires */
 .btn {
     margin: 0 5px;
-}
-
-.btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
 }
 
 .form-label {
     font-weight: 500;
+    color: #333;
+}
+
+.form-control {
+    border: 2px solid #ddd;
+    transition: all 0.3s ease;
 }
 
 .form-control:focus {
-    border-color: #4e73df;
-    box-shadow: 0 0 0 0.2rem rgba(78,115,223,0.25);
+    border-color: #ffd700;
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
 }
 
 .form-control.is-invalid {
@@ -85,13 +100,15 @@ h3 {
 }
 
 .btn-primary {
-    background-color: #4e73df;
-    border-color: #4e73df;
+    background-color: #333;
+    border-color: #333;
+    color: #ffd700;
 }
 
 .btn-primary:hover {
-    background-color: #2e59d9;
-    border-color: #2653d4;
+    background-color: #ffd700;
+    border-color: #ffd700;
+    color: #333;
 }
 
 .btn-secondary {
@@ -100,8 +117,15 @@ h3 {
 }
 
 .btn-success {
-    background-color: #1cc88a;
-    border-color: #1cc88a;
+    background-color: #ffd700;
+    border-color: #ffd700;
+    color: #333;
+}
+
+.btn-success:hover {
+    background-color: #333;
+    border-color: #333;
+    color: #ffd700;
 }
 
 /* Styles pour la modal */
@@ -112,9 +136,14 @@ h3 {
 }
 
 .modal-header {
+    background-color: #333 !important;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
-    border-bottom: none;
+    border-bottom: 3px solid #ffd700;
+}
+
+.modal-header .modal-title {
+    color: #ffd700;
 }
 
 .modal-footer {
@@ -122,18 +151,29 @@ h3 {
 }
 
 #reservationDetails {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: #f8f8f8;
+    border: 1px solid #ffd700;
     border-radius: 0.5rem;
+    padding: 20px;
 }
 
 .bi {
     vertical-align: -0.125em;
 }
 
+/* Section titles */
+.section-title {
+    color: #333;
+    border-left: 4px solid #ffd700;
+    padding-left: 15px;
+    margin-bottom: 20px;
+}
+
 /* Styles responsifs */
 @media (max-width: 768px) {
     .container {
         padding: 15px;
+        margin-top: 15px;
     }
     
     .btn {
