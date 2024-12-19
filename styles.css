@@ -80,6 +80,32 @@ h3 {
     border-color: #1cc88a;
 }
 
+/* Styles pour la modal */
+.modal-content {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    border-bottom: none;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+#reservationDetails {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 0.5rem;
+}
+
+.bi {
+    vertical-align: -0.125em;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 15px;

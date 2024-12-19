@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextButtons = document.querySelectorAll('.next-btn');
     const prevButtons = document.querySelectorAll('.prev-btn');
     const form = document.getElementById('hajjOmraForm');
+    const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'));
 
     // Afficher la première section
     sections[0].classList.add('active');
@@ -45,6 +46,14 @@ document.addEventListener('DOMContentLoaded', function() {
             currentSection.classList.remove('active');
             prevSection.classList.add('active');
         }
+    }
+
+    // Fonction pour mettre à jour la modal avec les détails de la réservation
+    function updateModalDetails(formData) {
+        document.getElementById('modalNom').textContent = `${formData.nom} ${formData.prenom}`;
+        document.getElementById('modalVoyage').textContent = formData.type_voyage.toUpperCase();
+        document.getElementById('modalEmail').textContent = formData.email;
+        document.getElementById('modalTelephone').textContent = formData.telephone;
     }
 
     // Ajouter les écouteurs d'événements aux boutons
@@ -82,7 +91,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (error) throw error;
 
-            alert('Votre réservation a été enregistrée avec succès !');
+            // Mettre à jour et afficher la modal
+            updateModalDetails(formData);
+            thankYouModal.show();
+
+            // Réinitialiser le formulaire
             form.reset();
             
             // Retour à la première section
@@ -92,5 +105,10 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Erreur:', error);
             alert('Une erreur est survenue lors de l\'enregistrement : ' + error.message);
         }
+    });
+
+    // Gérer la fermeture de la modal
+    document.getElementById('thankYouModal').addEventListener('hidden.bs.modal', function () {
+        window.scrollTo(0, 0);
     });
 });
