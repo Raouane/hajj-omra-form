@@ -29,6 +29,30 @@ h3 {
     padding-bottom: 0.5rem;
 }
 
+/* Style pour le lien d'administration */
+.admin-link {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+.admin-link:hover {
+    opacity: 1;
+}
+
+.admin-link a {
+    font-size: 1.2rem;
+    padding: 10px;
+}
+
+.admin-link a:hover {
+    color: #4e73df !important;
+}
+
+/* Styles pour les boutons et formulaires */
 .btn {
     margin: 0 5px;
 }
@@ -106,6 +130,7 @@ h3 {
     vertical-align: -0.125em;
 }
 
+/* Styles responsifs */
 @media (max-width: 768px) {
     .container {
         padding: 15px;
@@ -114,5 +139,10 @@ h3 {
     .btn {
         width: 100%;
         margin-bottom: 10px;
+    }
+
+    .admin-link {
+        bottom: 10px;
+        right: 10px;
     }
 }
