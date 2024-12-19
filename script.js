@@ -1,9 +1,7 @@
-import { SUPABASE_CREDENTIALS } from './credentials.js';
-
 // Initialisation du client Supabase
 const supabase = window.supabase.createClient(
-    SUPABASE_CREDENTIALS.url,
-    SUPABASE_CREDENTIALS.key
+    'https://pryjsgebocjoehasnpjd.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByeWpzZ2Vib2Nqb2VoYXNucGpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MTk3NjEsImV4cCI6MjA1MDE5NTc2MX0.DLF0m0UE46pdbPxkFenmXJrUyfO74rkL-IiUjp1gupc'
 );
 
 document.addEventListener('DOMContentLoaded', function() {
