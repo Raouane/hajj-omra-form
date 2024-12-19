@@ -1,7 +1,18 @@
-// Initialisation du client Supabase
+// Initialisation du client Supabase avec des options CORS
 const supabase = window.supabase.createClient(
     'https://pryjsgebocjoehasnpjd.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByeWpzZ2Vib2Nqb2VoYXNucGpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MTk3NjEsImV4cCI6MjA1MDE5NTc2MX0.DLF0m0UE46pdbPxkFenmXJrUyfO74rkL-IiUjp1gupc'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByeWpzZ2Vib2Nqb2VoYXNucGpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ2MTk3NjEsImV4cCI6MjA1MDE5NTc2MX0.DLF0m0UE46pdbPxkFenmXJrUyfO74rkL-IiUjp1gupc',
+    {
+        auth: {
+            autoRefreshToken: true,
+            persistSession: true
+        },
+        global: {
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            }
+        }
+    }
 );
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -66,7 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const { data, error } = await supabase
                 .from('reservations')
-                .insert([formData]);
+                .insert([formData])
+                .select();
 
             if (error) throw error;
 
