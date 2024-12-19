@@ -4,7 +4,7 @@ import { SUPABASE_CREDENTIALS } from './credentials.js';
 const supabase = window.supabase.createClient(
     SUPABASE_CREDENTIALS.url,
     SUPABASE_CREDENTIALS.key
-)
+);
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('hajjOmraForm');
@@ -12,33 +12,44 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextButtons = document.querySelectorAll('.next-btn');
     const prevButtons = document.querySelectorAll('.prev-btn');
 
-    // Afficher la première section au chargement
-    sections[0].classList.add('active');
+    // Fonction pour vérifier la validité des champs d'une section
+    function isSectionValid(section) {
+        const inputs = section.querySelectorAll('input[required], select[required]');
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        return isValid;
+    }
+
+    // Fonction pour afficher une section
+    function showSection(sectionIndex) {
+        sections.forEach((section, index) => {
+            if (index === sectionIndex) {
+                section.classList.add('active');
+            } else {
+                section.classList.remove('active');
+            }
+        });
+        window.scrollTo(0, 0);
+    }
 
     // Gestion des boutons "Suivant"
     nextButtons.forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
             const currentSection = this.closest('.form-section');
-            const nextSection = currentSection.nextElementSibling;
+            const currentIndex = Array.from(sections).indexOf(currentSection);
             
-            // Vérification des champs de la section courante
-            const inputs = currentSection.querySelectorAll('input[required], select[required]');
-            let isValid = true;
-            
-            inputs.forEach(input => {
-                if (!input.value.trim()) {
-                    isValid = false;
-                    input.classList.add('is-invalid');
-                } else {
-                    input.classList.remove('is-invalid');
-                }
-            });
-
-            if (isValid && nextSection) {
-                currentSection.classList.remove('active');
-                nextSection.classList.add('active');
-                window.scrollTo(0, 0);
+            if (isSectionValid(currentSection) && currentIndex < sections.length - 1) {
+                showSection(currentIndex + 1);
             }
         });
     });
@@ -48,12 +59,20 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function(e) {
             e.preventDefault();
             const currentSection = this.closest('.form-section');
-            const prevSection = currentSection.previousElementSibling;
+            const currentIndex = Array.from(sections).indexOf(currentSection);
             
-            if (prevSection) {
-                currentSection.classList.remove('active');
-                prevSection.classList.add('active');
-                window.scrollTo(0, 0);
+            if (currentIndex > 0) {
+                showSection(currentIndex - 1);
+            }
+        });
+    });
+
+    // Ajout des événements de validation en temps réel
+    const inputs = form.querySelectorAll('input[required], select[required]');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
             }
         });
     });
@@ -63,15 +82,10 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         
         // Vérification de tous les champs requis
-        const inputs = form.querySelectorAll('input[required], select[required]');
         let isValid = true;
-        
-        inputs.forEach(input => {
-            if (!input.value.trim()) {
+        sections.forEach(section => {
+            if (!isSectionValid(section)) {
                 isValid = false;
-                input.classList.add('is-invalid');
-            } else {
-                input.classList.remove('is-invalid');
             }
         });
 
@@ -99,13 +113,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 alert('Votre réservation a été enregistrée avec succès !');
                 form.reset();
-                // Retour à la première section
-                sections.forEach(section => section.classList.remove('active'));
-                sections[0].classList.add('active');
+                showSection(0); // Retour à la première section
             } catch (error) {
                 console.error('Erreur:', error);
                 alert('Une erreur est survenue lors de l\'enregistrement : ' + error.message);
             }
         }
     });
+
+    // Afficher la première section au chargement
+    showSection(0);
 });
