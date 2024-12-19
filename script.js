@@ -7,114 +7,80 @@ const supabase = window.supabase.createClient(
 );
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Sélection des éléments
+    const sections = document.querySelectorAll('.form-section');
+    const nextButtons = document.querySelectorAll('.next-btn');
+    const prevButtons = document.querySelectorAll('.prev-btn');
     const form = document.getElementById('hajjOmraForm');
-    const sections = Array.from(document.querySelectorAll('.form-section'));
-    let currentSection = 0;
 
-    // Fonction pour vérifier la validité des champs d'une section
-    function isSectionValid(section) {
-        const inputs = section.querySelectorAll('input[required], select[required]');
-        let isValid = true;
+    // Afficher la première section
+    sections[0].classList.add('active');
+
+    // Fonction pour passer à la section suivante
+    function nextSection(button) {
+        const currentSection = button.closest('.form-section');
+        const nextSection = currentSection.nextElementSibling;
         
-        inputs.forEach(input => {
-            if (!input.value.trim()) {
-                isValid = false;
-                input.classList.add('is-invalid');
-            } else {
-                input.classList.remove('is-invalid');
-            }
-        });
-
-        return isValid;
+        if (nextSection) {
+            currentSection.classList.remove('active');
+            nextSection.classList.add('active');
+        }
     }
 
-    // Fonction pour afficher une section
-    function showSection(index) {
-        sections.forEach((section, i) => {
-            if (i === index) {
-                section.style.display = 'block';
-                section.classList.add('active');
-            } else {
-                section.style.display = 'none';
-                section.classList.remove('active');
-            }
-        });
-        currentSection = index;
-        window.scrollTo(0, 0);
+    // Fonction pour revenir à la section précédente
+    function prevSection(button) {
+        const currentSection = button.closest('.form-section');
+        const prevSection = currentSection.previousElementSibling;
+        
+        if (prevSection) {
+            currentSection.classList.remove('active');
+            prevSection.classList.add('active');
+        }
     }
 
-    // Gestion des boutons "Suivant"
-    document.querySelectorAll('.next-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const section = sections[currentSection];
-            if (isSectionValid(section) && currentSection < sections.length - 1) {
-                showSection(currentSection + 1);
-            }
-        });
+    // Ajouter les écouteurs d'événements aux boutons
+    nextButtons.forEach(button => {
+        button.addEventListener('click', () => nextSection(button));
     });
 
-    // Gestion des boutons "Précédent"
-    document.querySelectorAll('.prev-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            if (currentSection > 0) {
-                showSection(currentSection - 1);
-            }
-        });
-    });
-
-    // Validation en temps réel
-    form.querySelectorAll('input[required], select[required]').forEach(input => {
-        input.addEventListener('input', function() {
-            if (this.value.trim()) {
-                this.classList.remove('is-invalid');
-            }
-        });
+    prevButtons.forEach(button => {
+        button.addEventListener('click', () => prevSection(button));
     });
 
     // Gestion de la soumission du formulaire
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Vérification finale de tous les champs
-        let isValid = true;
-        sections.forEach(section => {
-            if (!isSectionValid(section)) {
-                isValid = false;
-            }
-        });
+        try {
+            const formData = {
+                nom: document.getElementById('nom').value,
+                prenom: document.getElementById('prenom').value,
+                nationalite: document.getElementById('nationalite').value,
+                type_voyage: document.getElementById('typeVoyage').value,
+                type_hebergement: document.getElementById('typeHebergement').value,
+                email: document.getElementById('email').value,
+                telephone: document.getElementById('telephone').value,
+                adresse: document.getElementById('adresse').value,
+                ville: document.getElementById('ville').value,
+                code_postal: document.getElementById('codePostal').value,
+                date_creation: new Date().toISOString()
+            };
 
-        if (isValid) {
-            try {
-                const formData = {
-                    nom: document.getElementById('nom').value,
-                    prenom: document.getElementById('prenom').value,
-                    nationalite: document.getElementById('nationalite').value,
-                    type_voyage: document.getElementById('typeVoyage').value,
-                    type_hebergement: document.getElementById('typeHebergement').value,
-                    email: document.getElementById('email').value,
-                    telephone: document.getElementById('telephone').value,
-                    adresse: document.getElementById('adresse').value,
-                    ville: document.getElementById('ville').value,
-                    code_postal: document.getElementById('codePostal').value,
-                    date_creation: new Date().toISOString()
-                };
+            const { data, error } = await supabase
+                .from('reservations')
+                .insert([formData]);
 
-                const { data, error } = await supabase
-                    .from('reservations')
-                    .insert([formData]);
+            if (error) throw error;
 
-                if (error) throw error;
-
-                alert('Votre réservation a été enregistrée avec succès !');
-                form.reset();
-                showSection(0);
-            } catch (error) {
-                console.error('Erreur:', error);
-                alert('Une erreur est survenue lors de l\'enregistrement : ' + error.message);
-            }
+            alert('Votre réservation a été enregistrée avec succès !');
+            form.reset();
+            
+            // Retour à la première section
+            sections.forEach(section => section.classList.remove('active'));
+            sections[0].classList.add('active');
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de l\'enregistrement : ' + error.message);
         }
     });
-
-    // Initialiser l'affichage
-    showSection(0);
 });
