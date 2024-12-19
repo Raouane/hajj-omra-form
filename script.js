@@ -8,9 +8,8 @@ const supabase = window.supabase.createClient(
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('hajjOmraForm');
-    const sections = document.querySelectorAll('.form-section');
-    const nextButtons = document.querySelectorAll('.next-btn');
-    const prevButtons = document.querySelectorAll('.prev-btn');
+    const sections = Array.from(document.querySelectorAll('.form-section'));
+    let currentSection = 0;
 
     // Fonction pour vérifier la validité des champs d'une section
     function isSectionValid(section) {
@@ -30,46 +29,41 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fonction pour afficher une section
-    function showSection(sectionIndex) {
-        sections.forEach((section, index) => {
-            if (index === sectionIndex) {
+    function showSection(index) {
+        sections.forEach((section, i) => {
+            if (i === index) {
+                section.style.display = 'block';
                 section.classList.add('active');
             } else {
+                section.style.display = 'none';
                 section.classList.remove('active');
             }
         });
+        currentSection = index;
         window.scrollTo(0, 0);
     }
 
     // Gestion des boutons "Suivant"
-    nextButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const currentSection = this.closest('.form-section');
-            const currentIndex = Array.from(sections).indexOf(currentSection);
-            
-            if (isSectionValid(currentSection) && currentIndex < sections.length - 1) {
-                showSection(currentIndex + 1);
+    document.querySelectorAll('.next-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const section = sections[currentSection];
+            if (isSectionValid(section) && currentSection < sections.length - 1) {
+                showSection(currentSection + 1);
             }
         });
     });
 
     // Gestion des boutons "Précédent"
-    prevButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const currentSection = this.closest('.form-section');
-            const currentIndex = Array.from(sections).indexOf(currentSection);
-            
-            if (currentIndex > 0) {
-                showSection(currentIndex - 1);
+    document.querySelectorAll('.prev-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            if (currentSection > 0) {
+                showSection(currentSection - 1);
             }
         });
     });
 
-    // Ajout des événements de validation en temps réel
-    const inputs = form.querySelectorAll('input[required], select[required]');
-    inputs.forEach(input => {
+    // Validation en temps réel
+    form.querySelectorAll('input[required], select[required]').forEach(input => {
         input.addEventListener('input', function() {
             if (this.value.trim()) {
                 this.classList.remove('is-invalid');
@@ -81,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Vérification de tous les champs requis
+        // Vérification finale de tous les champs
         let isValid = true;
         sections.forEach(section => {
             if (!isSectionValid(section)) {
@@ -113,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 alert('Votre réservation a été enregistrée avec succès !');
                 form.reset();
-                showSection(0); // Retour à la première section
+                showSection(0);
             } catch (error) {
                 console.error('Erreur:', error);
                 alert('Une erreur est survenue lors de l\'enregistrement : ' + error.message);
@@ -121,6 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Afficher la première section au chargement
+    // Initialiser l'affichage
     showSection(0);
 });
